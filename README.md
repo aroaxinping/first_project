@@ -3,13 +3,38 @@
 
 # Installation
 
-1. **Clone the repository**:
+1. **Install Git LFS** (needed before cloning — the raw Home Credit CSVs
+   in `data/raw/` and `data/clean/` are tracked with Git LFS since they're
+   too large for regular Git):
+
+   - macOS: `brew install git-lfs`
+   - Windows: download the installer from [git-lfs.com](https://git-lfs.com/) and run it (or `winget install GitHub.GitLFS` / `choco install git-lfs` if you use one of those)
+   - Linux (Debian/Ubuntu): `sudo apt install git-lfs`
+
+   Then, **once per machine** (not once per repo):
+
+   ```bash
+   git lfs install
+   ```
+
+2. **Clone the repository**:
 
 ```bash
-git clone https://github.com/YourUsername/repository_name.git
+git clone https://github.com/aroaxinping/first_project.git
+cd first_project
+git checkout aroa
 ```
 
-2. **Install UV**
+   If you already cloned the repo *before* installing Git LFS, the CSVs
+   in `data/raw/`/`data/clean/` will show up as tiny placeholder files
+   instead of the real data. Fix it by running this after installing
+   Git LFS (step 1):
+
+   ```bash
+   git lfs pull
+   ```
+
+3. **Install UV**
 
 If you're a MacOS/Linux user type:
 
@@ -23,36 +48,36 @@ If you're a Windows user open an Anaconda Powershell Prompt and type :
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-3. **Create an environment**
+4. **Create an environment**
 
 ```bash
-uv venv 
+uv venv
 ```
 
-3. **Activate the environment**
+5. **Activate the environment**
 
 If you're a MacOS/Linux user type (if you're using a bash shell):
 
 ```bash
-source ./venv/bin/activate
+source .venv/bin/activate
 ```
 
 If you're a MacOS/Linux user type (if you're using a csh/tcsh shell):
 
 ```bash
-source ./venv/bin/activate.csh
+source .venv/bin/activate.csh
 ```
 
 If you're a Windows user type:
 
 ```bash
-.\venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
-4. **Install dependencies**:
+6. **Install dependencies**:
 
 ```bash
-uv pip install -r requirements.txt
+uv sync
 ```
 
 # Questions 
