@@ -1,5 +1,14 @@
 input_data:
-  file: "../data/raw/raw_data_file.csv"
+  application: "../data/raw/application_train.csv"
+  bureau: "../data/raw/bureau.csv"
+  previous_application: "../data/raw/previous_application.csv"
 
 output_data:
-  file: "../data/clean/cleaned_data_file.csv"
+  application: "../data/clean/application_clean.csv"
+  bureau: "../data/clean/bureau_clean.csv"
+  previous_application: "../data/clean/previous_application_clean.csv"
+
+database:
+  name: "home_credit"
+  host: "localhost"
+  user: "root"
