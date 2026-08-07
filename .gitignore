@@ -6,7 +6,3 @@ notebooks/.env
 notebooks/.DS_Store
 .DS_Store
 *.in
-
-# Home Credit raw CSVs are ~740MB combined -- GitHub blocks anything over 100MB anyway
-data/raw/
-data/clean/
