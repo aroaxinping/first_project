@@ -3,21 +3,7 @@
 
 # Installation
 
-1. **Install Git LFS** (needed before cloning — the raw Home Credit CSVs
-   in `data/raw/` and `data/clean/` are tracked with Git LFS since they're
-   too large for regular Git):
-
-   - macOS: `brew install git-lfs`
-   - Windows: download the installer from [git-lfs.com](https://git-lfs.com/) and run it (or `winget install GitHub.GitLFS` / `choco install git-lfs` if you use one of those)
-   - Linux (Debian/Ubuntu): `sudo apt install git-lfs`
-
-   Then, **once per machine** (not once per repo):
-
-   ```bash
-   git lfs install
-   ```
-
-2. **Clone the repository**:
+1. **Clone the repository**:
 
 ```bash
 git clone https://github.com/aroaxinping/first_project.git
@@ -25,14 +11,13 @@ cd first_project
 git checkout aroa
 ```
 
-   If you already cloned the repo *before* installing Git LFS, the CSVs
-   in `data/raw/`/`data/clean/` will show up as tiny placeholder files
-   instead of the real data. Fix it by running this after installing
-   Git LFS (step 1):
-
-   ```bash
-   git lfs pull
-   ```
+2. **Download the Home Credit dataset yourself** from
+   [Kaggle](https://www.kaggle.com/competitions/home-credit-default-risk/data)
+   (join the competition first) and place `application_train.csv`,
+   `bureau.csv`, `previous_application.csv` and
+   `HomeCredit_columns_description.csv` in `data/raw/`. These files are
+   **not** in the repo (~740MB combined, over GitHub's 100MB file limit) —
+   each teammate needs their own local copy.
 
 3. **Install UV**
 
