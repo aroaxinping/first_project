@@ -1,5 +1,17 @@
 # Project overview
-...
+
+**Credit Crunchers** is a data analytics consultancy — this project simulates
+us being brought in by a consumer credit lender that serves clients with
+little or no formal banking history. They need to better understand default
+risk to decide who to lend to, on what terms, and which products to grow or
+restrict.
+
+Using the [Home Credit Default Risk](https://www.kaggle.com/competitions/home-credit-default-risk)
+dataset, we designed a relational database, cleaned and modeled the data,
+and answered five business questions with SQL and Python to support that
+decision-making.
+
+**Team**: Aroa, Carla, Paul
 
 # Installation
 
