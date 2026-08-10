@@ -77,6 +77,20 @@ If you're a Windows user type:
 uv sync
 ```
 
+7. **Create the database**
+
+You need MySQL installed and running locally. Then run the schema script,
+which creates the `home_credit` database and its three tables
+(`application`, `bureau`, `previous_application`) with the columns and
+foreign keys described in [Dataset](#dataset) below:
+
+```bash
+mysql -u root -p < sql_scripts/create_database.sql
+```
+
+(`-u root` matches the `database.user` in `config.yaml` — change it if your
+local MySQL user is different. It'll prompt for your MySQL password.)
+
 # Questions
 
 1. **Which applicant profiles concentrate the risk of default?**
