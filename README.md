@@ -123,55 +123,7 @@ trimmed to the columns the 5 questions above actually need. Schema in
 selection reasoning in
 [`notebooks/column_selection_combined.ipynb`](notebooks/column_selection_combined.ipynb).
 
-```mermaid
-erDiagram
-    application ||--o{ bureau : "SK_ID_CURR"
-    application ||--o{ previous_application : "SK_ID_CURR"
-
-    application {
-        int SK_ID_CURR PK
-        int TARGET
-        string CODE_GENDER
-        int CNT_CHILDREN
-        int CNT_FAM_MEMBERS
-        string NAME_FAMILY_STATUS
-        string FLAG_OWN_CAR
-        string FLAG_OWN_REALTY
-        float AMT_INCOME_TOTAL
-        float AMT_CREDIT
-        float AMT_ANNUITY
-        string NAME_CONTRACT_TYPE
-        string NAME_INCOME_TYPE
-        string OCCUPATION_TYPE
-        string NAME_EDUCATION_TYPE
-        string NAME_HOUSING_TYPE
-        int DAYS_BIRTH
-        int DAYS_EMPLOYED
-    }
-
-    bureau {
-        int SK_ID_CURR FK
-        int CREDIT_DAY_OVERDUE
-        float AMT_CREDIT_SUM_OVERDUE
-    }
-
-    previous_application {
-        int SK_ID_PREV PK
-        int SK_ID_CURR FK
-        string NAME_CONTRACT_STATUS
-        string CODE_REJECT_REASON
-        string NAME_PORTFOLIO
-        string NAME_PRODUCT_TYPE
-        string NAME_YIELD_GROUP
-        string CHANNEL_TYPE
-        string NAME_SELLER_INDUSTRY
-    }
-```
-
-Both are one-to-many from `application`, joined on `SK_ID_CURR`: one applicant
-can have many prior credits at other institutions (`bureau`) and many prior
-applications with Home Credit itself (`previous_application`). `bureau` keeps
-no surrogate key of its own — it's trimmed down to just what Q2 needs.
+ERD: TODO
 
 ## Main dataset issues
 
