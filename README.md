@@ -133,6 +133,11 @@ can have many prior credits at other institutions (`bureau`) and many prior
 applications with Home Credit itself (`previous_application`). `bureau` keeps
 no surrogate key of its own — it's trimmed down to just what Q2 needs.
 
+The conceptual model behind that schema, in Chen notation — entities as
+rectangles, attributes as ellipses, relationships as diamonds:
+
+![ERM](figures/home_credit_erm.png)
+
 ## Main dataset issues
 
 - ...
