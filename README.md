@@ -11,7 +11,11 @@ dataset, we designed a relational database, cleaned and modeled the data,
 and answered five business questions with SQL and Python to support that
 decision-making.
 
-**Team**: Aroa, Carla, Paul
+## Team Members
+
+- Carla
+- Paul
+- Aroa — Project Manager
 
 # Installation
 
@@ -95,6 +99,28 @@ mysql -u root -p < sql_scripts/create_database.sql
 (`-u root` matches the `database.user` in `config.yaml` — change it if your
 local MySQL user is different. It'll prompt for your MySQL password.)
 
+8. **Populate the tables**
+
+Run these three notebooks, **in this order** — `bureau` and
+`previous_application` both have a foreign key to `application.SK_ID_CURR`,
+so if you run them before `application` is loaded, they'll filter out every
+row and load nothing:
+
+1. `notebooks/explore_clean_data_aroa.ipynb` (`application`)
+2. `notebooks/explore_clean_data_paul.ipynb` (`bureau`)
+3. `notebooks/explore_clean_data_carla.ipynb` (`previous_application`)
+
+Each one reads its raw CSV, cleans it, and loads it into MySQL — no extra
+setup needed beyond steps 1–7 above.
+
+**Run each notebook only once.** `application` and `previous_application`
+will throw a duplicate-key error on a second run; `bureau` won't error, it
+will just duplicate every row. To start clean:
+
+```bash
+mysql -u root -p -e "USE home_credit; DELETE FROM bureau; DELETE FROM previous_application; DELETE FROM application;"
+```
+
 # Questions
 
 1. **Which applicant profiles concentrate the risk of default?**
@@ -136,11 +162,6 @@ Both are one-to-many from `application`, joined on `SK_ID_CURR`: one applicant
 can have many prior credits at other institutions (`bureau`) and many prior
 applications with Home Credit itself (`previous_application`). `bureau` keeps
 no surrogate key of its own — it's trimmed down to just what Q2 needs.
-
-Conceptual model (ERM, Chen notation) of the three tables we're using and how
-they relate through `SK_ID_CURR`:
-
-![ERM](figures/home_credit_erm.png)
 
 Conceptual model (ERM, Chen notation) of the three tables we're using and how
 they relate through `SK_ID_CURR`:
