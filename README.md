@@ -22,10 +22,19 @@ decision-making.
 1. **Clone the repository**:
 
 ```bash
-git clone https://github.com/YourUsername/repository_name.git
+git clone https://github.com/aroaxinping/first_project.git
+cd first_project
 ```
 
-2. **Install UV**
+2. **Download the Home Credit dataset yourself** from
+   [Kaggle](https://www.kaggle.com/competitions/home-credit-default-risk/data)
+   (join the competition first) and place `application_train.csv`,
+   `bureau.csv`, `previous_application.csv` and
+   `HomeCredit_columns_description.csv` in `data/raw/`. These files are
+   **not** in the repo (~740MB combined, over GitHub's 100MB file limit) —
+   each teammate needs their own local copy.
+
+3. **Install UV**
 
 If you're a MacOS/Linux user type:
 
@@ -39,13 +48,13 @@ If you're a Windows user open an Anaconda Powershell Prompt and type :
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-3. **Create an environment**
+4. **Create an environment**
 
 ```bash
 uv venv 
 ```
 
-3. **Activate the environment**
+5. **Activate the environment**
 
 If you're a MacOS/Linux user type (if you're using a bash shell):
 
@@ -78,14 +87,13 @@ once first:
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-4. **Install dependencies**:
+6. **Install dependencies**:
 
 ```bash
 uv sync
 ```
 
-=======
-5. **Create the database**
+7. **Create the database**
 
 You need MySQL installed and running locally. Then run the schema script,
 which creates the `home_credit` database and its three tables
