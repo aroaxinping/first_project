@@ -95,6 +95,20 @@ mysql -u root -p < sql_scripts/create_database.sql
 (`-u root` matches the `database.user` in `config.yaml` — change it if your
 local MySQL user is different. It'll prompt for your MySQL password.)
 
+8. **Populate the tables**
+
+Run these three notebooks, **in this order** — `bureau` and
+`previous_application` both have a foreign key to `application.SK_ID_CURR`,
+so if you run them before `application` is loaded, they'll filter out every
+row and load nothing:
+
+1. `notebooks/explore_clean_data_aroa.ipynb` (`application`)
+2. `notebooks/explore_clean_data_paul.ipynb` (`bureau`)
+3. `notebooks/explore_clean_data_carla.ipynb` (`previous_application`)
+
+Each one reads its raw CSV, cleans it, and loads it into MySQL — no extra
+setup needed beyond steps 1–7 above.
+
 # Questions
 
 1. **Which applicant profiles concentrate the risk of default?**
