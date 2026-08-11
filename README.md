@@ -65,10 +65,23 @@ If you're a MacOS/Linux user type (if you're using a csh/tcsh shell):
 source .venv/bin/activate.csh
 ```
 
-If you're a Windows user type:
+If you're a Windows user in Command Prompt:
 
 ```bash
 .venv\Scripts\activate
+```
+
+If you're a Windows user in PowerShell (e.g. Anaconda Powershell Prompt):
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+If that fails with a message about script execution being disabled, run this
+once first:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
 6. **Install dependencies**:
