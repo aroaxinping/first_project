@@ -6,3 +6,10 @@ notebooks/.env
 notebooks/.DS_Store
 .DS_Store
 *.in
+
+# Home Credit raw CSVs are ~740MB combined -- GitHub blocks anything over 100MB,
+# and Git LFS doesn't work here since this repo is a public fork (can't push new
+# LFS objects to a fork on github.com). Each teammate downloads their own copy
+# from Kaggle into these folders instead.
+data/raw/
+data/clean/
