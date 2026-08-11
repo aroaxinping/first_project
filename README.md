@@ -13,8 +13,8 @@ decision-making.
 
 ## Team Members
 
-- Carla
-- Paul
+- Carla — Data Analyst
+- Paul — Data Analyst
 - Aroa — Project Manager
 
 # Installation
