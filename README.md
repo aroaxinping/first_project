@@ -11,7 +11,11 @@ dataset, we designed a relational database, cleaned and modeled the data,
 and answered five business questions with SQL and Python to support that
 decision-making.
 
-**Team**: Aroa, Carla, Paul
+## Team Members
+
+- Carla
+- Paul
+- Aroa — Project Manager
 
 # Installation
 
@@ -158,11 +162,6 @@ Both are one-to-many from `application`, joined on `SK_ID_CURR`: one applicant
 can have many prior credits at other institutions (`bureau`) and many prior
 applications with Home Credit itself (`previous_application`). `bureau` keeps
 no surrogate key of its own — it's trimmed down to just what Q2 needs.
-
-Conceptual model (ERM, Chen notation) of the three tables we're using and how
-they relate through `SK_ID_CURR`:
-
-![ERM](figures/home_credit_erm.png)
 
 Conceptual model (ERM, Chen notation) of the three tables we're using and how
 they relate through `SK_ID_CURR`:
