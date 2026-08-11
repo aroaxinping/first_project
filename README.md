@@ -109,6 +109,26 @@ row and load nothing:
 Each one reads its raw CSV, cleans it, and loads it into MySQL — no extra
 setup needed beyond steps 1–7 above.
 
+**Run each notebook only once.** They `INSERT` into tables that already
+have their schema, they don't clear anything first, so a second run doesn't
+behave the same way twice:
+
+- `application` and `previous_application` have a primary key
+  (`SK_ID_CURR`, `SK_ID_PREV`), so running them again throws a
+  duplicate-key error. Nothing gets corrupted, but you'll see a big
+  MySQL error.
+- `bureau` has no natural key, just a surrogate `id` — running it again
+  won't error, it'll silently insert every row a second time and double
+  the table.
+
+If you need to start clean, delete the tables in this order (children
+before parent, since `bureau` and `previous_application` reference
+`application` via foreign key):
+
+```bash
+mysql -u root -p -e "USE home_credit; DELETE FROM bureau; DELETE FROM previous_application; DELETE FROM application;"
+```
+
 # Questions
 
 1. **Which applicant profiles concentrate the risk of default?**
