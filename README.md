@@ -77,8 +77,22 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 4. **Install dependencies**:
 
 ```bash
-uv pip install -r requirements.txt
+uv sync
 ```
+
+5. **Create the database**
+
+You need MySQL installed and running locally. Then run the schema script,
+which creates the `home_credit` database and its three tables
+(`application`, `bureau`, `previous_application`) with the columns and
+foreign keys described in [Dataset](#dataset) below:
+
+```bash
+mysql -u root -p < sql_scripts/create_database.sql
+```
+
+(`-u root` matches the `database.user` in `config.yaml` — change it if your
+local MySQL user is different. It'll prompt for your MySQL password.)
 
 # Questions
 
@@ -105,7 +119,22 @@ uv pip install -r requirements.txt
    need tighter controls.
 
 # Dataset 
-...
+
+Three tables from [Home Credit Default Risk](https://www.kaggle.com/competitions/home-credit-default-risk),
+trimmed to the columns the 5 questions above actually need. Schema in
+[`sql_scripts/create_database.sql`](sql_scripts/create_database.sql), column
+selection reasoning in
+[`notebooks/column_selection_combined.ipynb`](notebooks/column_selection_combined.ipynb).
+
+ERD, generated with MySQL Workbench's Database → Reverse Engineer directly from
+the live `home_credit` database (not hand-drawn):
+
+![ERD](figures/home_credit_erd_mysql.png)
+
+Both are one-to-many from `application`, joined on `SK_ID_CURR`: one applicant
+can have many prior credits at other institutions (`bureau`) and many prior
+applications with Home Credit itself (`previous_application`). `bureau` keeps
+no surrogate key of its own — it's trimmed down to just what Q2 needs.
 
 Conceptual model (ERM, Chen notation) of the three tables we're using and how
 they relate through `SK_ID_CURR`:
