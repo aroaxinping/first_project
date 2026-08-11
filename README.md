@@ -94,6 +94,11 @@ uv pip install -r requirements.txt
 # Dataset 
 ...
 
+Conceptual model (ERM, Chen notation) of the three tables we're using and how
+they relate through `SK_ID_CURR`:
+
+![ERM](figures/home_credit_erm.png)
+
 ## Main dataset issues
 
 - ...
