@@ -204,15 +204,54 @@ they relate through `SK_ID_CURR`:
 
 ## Main dataset issues
 
-- ...
-- ...
-- ...
+- `application`: `CODE_GENDER` had 4 `'XNA'` rows, `OCCUPATION_TYPE` had
+  96,391 nulls (31% of the table, but 100% tied to Pensioner/Unemployed
+  applicants — structural, not random), and `DAYS_EMPLOYED` had a known
+  placeholder bug (`365243`) for that same population.
+- `bureau` and `previous_application` both include applicants outside
+  `application_train.csv` (Kaggle's held-out test set) — about 251K and
+  256K rows respectively reference a `SK_ID_CURR` that doesn't exist in
+  `application`, which would violate the foreign key if loaded as-is.
+- The team's local setups weren't uniform: some MySQL installs had a root
+  password and some didn't, and `<` file redirection doesn't work the same
+  way in Windows PowerShell as in bash — both broke the load step for part
+  of the team before being fixed.
 
 ## Solutions for the dataset issues
-...
 
-# Conclussions
-...
+- Dropped the negligible bad rows (XNA gender, a handful of nulls) and
+  filled `OCCUPATION_TYPE` nulls with `"Not Employed"` instead of dropping
+  31% of the table; replaced the `365243` placeholder with `NaN`.
+- Filtered `bureau` and `previous_application` to only the `SK_ID_CURR`
+  values already loaded in `application` before inserting, so the foreign
+  key is never violated.
+- Switched the MySQL connection to prompt for a password (`getpass`)
+  instead of assuming it's empty, and documented the PowerShell equivalent
+  for commands that use `<` redirection.
+
+# Conclusions
+
+Risk isn't scattered randomly across this portfolio — it concentrates
+predictably. Low-skill occupations, unstable housing, and low education
+all point the same direction (Q1). A troubled or absent bureau history
+roughly doubles default risk compared to a clean one (Q2). Certain
+channels and products — especially `AP+ (Cash loan)` and `Cards` — run
+well above the portfolio average (Q5). Current rejection criteria are
+working, not overcautious: past refusals, especially reason `SCOFR`, keep
+predicting real risk even after approval (Q4). The one assumption this
+data pushes back on is loyalty: returning clients are *not* safer than
+new ones (Q3), so retention shouldn't be treated as automatically
+lower-risk.
 
 # Next steps
-...
+
+- Q3's unexplained residual (clean-history returning clients still
+  riskier than new ones) needs the untrimmed dataset — amounts and dates
+  aren't in the current schema, so this can't go further without
+  reloading more columns.
+- Combine the five findings into a single risk score instead of reading
+  them independently, so an application can be scored on all five signals
+  at once.
+- Pilot tiered pricing or guarantees on the highest-risk segments
+  identified here (Q1 profiles, Q2's troubled-history tier, Q4's
+  SCOFR-refused applicants) before a full rollout.
