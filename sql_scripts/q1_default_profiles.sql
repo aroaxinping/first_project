@@ -1,0 +1,2 @@
+-- Author: Aroa
+-- Q1: Which applicant profiles concentrate the risk of default?
