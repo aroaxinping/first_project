@@ -100,8 +100,17 @@ which creates the `home_credit` database and its three tables
 (`application`, `bureau`, `previous_application`) with the columns and
 foreign keys described in [Dataset](#dataset) below:
 
+If you're a MacOS/Linux user:
+
 ```bash
 mysql -u root -p < sql_scripts/create_database.sql
+```
+
+If you're a Windows user in PowerShell, `<` redirection isn't supported —
+use this instead:
+
+```powershell
+Get-Content sql_scripts/create_database.sql | mysql -u root -p
 ```
 
 (`-u root` matches the `database.user` in `config.yaml` — change it if your
