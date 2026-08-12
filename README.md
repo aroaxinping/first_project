@@ -132,26 +132,43 @@ mysql -u root -p -e "USE home_credit; DELETE FROM bureau; DELETE FROM previous_a
 # Questions
 
 1. **Which applicant profiles concentrate the risk of default?**
-   Which criteria to use when approving, rejecting, or requiring additional
-   guarantees.
+   Risk concentrates in low-skill occupations, unstable housing, and lower
+   education — all clearly above the 8.07% portfolio baseline. Top
+   segments: Low-skill Laborers 17.16%, Rented apartment 12.32%, Lower
+   secondary education 10.93%. Same signal from three different angles,
+   likely correlated with each other — the clearest candidates for extra
+   guarantees. ([`q1_default_profiles.sql`](sql_scripts/q1_default_profiles.sql))
 
 2. **How does prior credit history relate to default risk?**
-   Whether different levels of credit history need different treatment —
-   verified as a 3-tier gradient: clean history 7.62% default, no history
-   10.12%, troubled history 15.78%.
+   Bureau history isn't just present-or-absent — splitting it into a
+   3-tier gradient by overdue status reveals: clean history 7.62% default,
+   no bureau history 10.13%, troubled history 15.79%. Having no history at
+   all sits closer to "troubled" than "clean," so it's worth pricing risk
+   in three tiers, not two. ([`q2_credit_history.sql`](sql_scripts/q2_credit_history.sql))
 
 3. **Is a returning client a better client than a new one?**
-   Whether to invest in retention or in acquisition — verified,
-   counter-intuitively, new clients default *less* (5.94%) than clients
-   with previously approved loans (8.19%).
+   Counter-intuitively, no — returning clients default *more* (8.19%) than
+   brand-new ones (5.96%). Mostly driven by refusal history: clients who
+   were previously refused default at 10.32%, vs. 7.13% (clean) and 6.94%
+   (canceled). Ruled out application count and unused offers as
+   explanations for the remaining gap — with this trimmed schema (no
+   amounts or dates) it's likely a selection effect rather than a specific
+   red flag we can point to. ([`q3_returning_clients.sql`](sql_scripts/q3_returning_clients.sql))
 
 4. **Were past rejections the right call?**
-   Whether current rejection criteria are well calibrated or are turning
-   away profitable business.
+   Yes — a past refusal still predicts more risk today, even on a loan
+   that did get approved (10.32% vs. 6.98% never-refused). Risk climbs
+   with every extra refusal (6.98% → 8.84% → 11.61%), and the reject
+   reason `SCOFR` stands out at 20.93%, more than double the baseline.
+   The rejection criteria is picking up a real, persistent signal, not
+   turning away good business by mistake. ([`q4_past_rejections.sql`](sql_scripts/q4_past_rejections.sql))
 
 5. **Which products and channels concentrate the risk?**
-   Which products to push, which to restrict, and which sales channels
-   need tighter controls.
+   The `AP+ (Cash loan)` channel (11.28%) and `Cards` product (9.55%)
+   carry the most risk individually; the riskiest combination is `XNA`
+   product through the `AP+` channel at 14.45%. Default rate also climbs
+   steadily with yield group, from 6.38% (low) to 9.01% (high) — pricing
+   already tracks risk here, which is reassuring. ([`q5_products_channels.sql`](sql_scripts/q5_products_channels.sql))
 
 # Dataset 
 
