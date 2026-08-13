@@ -132,3 +132,6 @@ ORDER BY default_rate_percent DESC;
 -- selection effect (people who seek credit more than once may just run
 -- tighter finances in general). Amounts/dates aren't in this trimmed
 -- table, so we can't dig further without going back to the raw CSV.
+
+-- For a deeper look at WHY (using extra columns not in this trimmed
+-- table -- amounts and dates), see q3_extended_repeat_client_drivers.sql
