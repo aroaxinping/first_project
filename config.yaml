@@ -7,6 +7,7 @@ output_data:
   application: "../data/clean/application_clean.csv"
   bureau: "../data/clean/bureau_clean.csv"
   previous_application: "../data/clean/previous_application_clean.csv"
+  previous_application_extended: "../data/clean/previous_application_extended_clean.csv"
 
 database:
   name: "home_credit"
