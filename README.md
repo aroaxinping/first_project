@@ -11,7 +11,11 @@ dataset, we designed a relational database, cleaned and modeled the data,
 and answered five business questions with SQL and Python to support that
 decision-making.
 
-**Team**: Aroa, Carla, Paul
+## Team Members
+
+- Carla — Data Analyst
+- Paul — Data Analyst
+- Aroa — Project Manager
 
 # Installation
 
@@ -20,7 +24,6 @@ decision-making.
 ```bash
 git clone https://github.com/aroaxinping/first_project.git
 cd first_project
-git checkout aroa
 ```
 
 2. **Download the Home Credit dataset yourself** from
@@ -48,7 +51,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 4. **Create an environment**
 
 ```bash
-uv venv
+uv venv 
 ```
 
 5. **Activate the environment**
@@ -97,38 +100,86 @@ which creates the `home_credit` database and its three tables
 (`application`, `bureau`, `previous_application`) with the columns and
 foreign keys described in [Dataset](#dataset) below:
 
+If you're a MacOS/Linux user:
+
 ```bash
 mysql -u root -p < sql_scripts/create_database.sql
+```
+
+If you're a Windows user in PowerShell, `<` redirection isn't supported —
+use this instead:
+
+```powershell
+Get-Content sql_scripts/create_database.sql | mysql -u root -p
 ```
 
 (`-u root` matches the `database.user` in `config.yaml` — change it if your
 local MySQL user is different. It'll prompt for your MySQL password.)
 
+8. **Populate the tables**
+
+Run these three notebooks, **in this order** — `bureau` and
+`previous_application` both have a foreign key to `application.SK_ID_CURR`,
+so if you run them before `application` is loaded, they'll filter out every
+row and load nothing:
+
+1. `notebooks/explore_clean_data_aroa.ipynb` (`application`)
+2. `notebooks/explore_clean_data_paul.ipynb` (`bureau`)
+3. `notebooks/explore_clean_data_carla.ipynb` (`previous_application`)
+
+Each one reads its raw CSV, cleans it, and loads it into MySQL — no extra
+setup needed beyond steps 1–7 above.
+
+**Run each notebook only once.** `application` and `previous_application`
+will throw a duplicate-key error on a second run; `bureau` won't error, it
+will just duplicate every row. To start clean:
+
+```bash
+mysql -u root -p -e "USE home_credit; DELETE FROM bureau; DELETE FROM previous_application; DELETE FROM application;"
+```
+
 # Questions
 
 1. **Which applicant profiles concentrate the risk of default?**
-   Which criteria to use when approving, rejecting, or requiring additional
-   guarantees.
+   Risk concentrates in low-skill occupations, unstable housing, and lower
+   education — all clearly above the 8.07% portfolio baseline. Top
+   segments: Low-skill Laborers 17.16%, Rented apartment 12.32%, Lower
+   secondary education 10.93%. Same signal from three different angles,
+   likely correlated with each other — the clearest candidates for extra
+   guarantees. ([`q1_default_profiles.sql`](sql_scripts/q1_default_profiles.sql))
 
 2. **How does prior credit history relate to default risk?**
-   Whether different levels of credit history need different treatment —
-   verified as a 3-tier gradient: clean history 7.62% default, no history
-   10.12%, troubled history 15.78%.
+   Bureau history isn't just present-or-absent — splitting it into a
+   3-tier gradient by overdue status reveals: clean history 7.62% default,
+   no bureau history 10.13%, troubled history 15.79%. Having no history at
+   all sits closer to "troubled" than "clean," so it's worth pricing risk
+   in three tiers, not two. ([`q2_credit_history.sql`](sql_scripts/q2_credit_history.sql))
 
 3. **Is a returning client a better client than a new one?**
-   Whether to invest in retention or in acquisition — verified,
-   counter-intuitively, new clients default *less* (5.94%) than clients
-   with previously approved loans (8.19%).
+   Counter-intuitively, no — returning clients default *more* (8.19%) than
+   brand-new ones (5.96%). Mostly driven by refusal history: clients who
+   were previously refused default at 10.32%, vs. 7.13% (clean) and 6.94%
+   (canceled). Ruled out application count and unused offers as
+   explanations for the remaining gap — with this trimmed schema (no
+   amounts or dates) it's likely a selection effect rather than a specific
+   red flag we can point to. ([`q3_returning_clients.sql`](sql_scripts/q3_returning_clients.sql))
 
 4. **Were past rejections the right call?**
-   Whether current rejection criteria are well calibrated or are turning
-   away profitable business.
+   Yes — a past refusal still predicts more risk today, even on a loan
+   that did get approved (10.32% vs. 6.98% never-refused). Risk climbs
+   with every extra refusal (6.98% → 8.84% → 11.61%), and the reject
+   reason `SCOFR` stands out at 20.93%, more than double the baseline.
+   The rejection criteria is picking up a real, persistent signal, not
+   turning away good business by mistake. ([`q4_past_rejections.sql`](sql_scripts/q4_past_rejections.sql))
 
 5. **Which products and channels concentrate the risk?**
-   Which products to push, which to restrict, and which sales channels
-   need tighter controls.
+   The `AP+ (Cash loan)` channel (11.28%) and `Cards` product (9.55%)
+   carry the most risk individually; the riskiest combination is `XNA`
+   product through the `AP+` channel at 14.45%. Default rate also climbs
+   steadily with yield group, from 6.38% (low) to 9.01% (high) — pricing
+   already tracks risk here, which is reassuring. ([`q5_products_channels.sql`](sql_scripts/q5_products_channels.sql))
 
-# Dataset
+# Dataset 
 
 Three tables from [Home Credit Default Risk](https://www.kaggle.com/competitions/home-credit-default-risk),
 trimmed to the columns the 5 questions above actually need. Schema in
@@ -146,22 +197,61 @@ can have many prior credits at other institutions (`bureau`) and many prior
 applications with Home Credit itself (`previous_application`). `bureau` keeps
 no surrogate key of its own — it's trimmed down to just what Q2 needs.
 
-The conceptual model behind that schema, in Chen notation — entities as
-rectangles, attributes as ellipses, relationships as diamonds:
+Conceptual model (ERM, Chen notation) of the three tables we're using and how
+they relate through `SK_ID_CURR`:
 
 ![ERM](figures/home_credit_erm.png)
 
 ## Main dataset issues
 
-- ...
-- ...
-- ...
+- `application`: `CODE_GENDER` had 4 `'XNA'` rows, `OCCUPATION_TYPE` had
+  96,391 nulls (31% of the table, but 100% tied to Pensioner/Unemployed
+  applicants — structural, not random), and `DAYS_EMPLOYED` had a known
+  placeholder bug (`365243`) for that same population.
+- `bureau` and `previous_application` both include applicants outside
+  `application_train.csv` (Kaggle's held-out test set) — about 251K and
+  256K rows respectively reference a `SK_ID_CURR` that doesn't exist in
+  `application`, which would violate the foreign key if loaded as-is.
+- The team's local setups weren't uniform: some MySQL installs had a root
+  password and some didn't, and `<` file redirection doesn't work the same
+  way in Windows PowerShell as in bash — both broke the load step for part
+  of the team before being fixed.
 
 ## Solutions for the dataset issues
-...
 
-# Conclussions
-...
+- Dropped the negligible bad rows (XNA gender, a handful of nulls) and
+  filled `OCCUPATION_TYPE` nulls with `"Not Employed"` instead of dropping
+  31% of the table; replaced the `365243` placeholder with `NaN`.
+- Filtered `bureau` and `previous_application` to only the `SK_ID_CURR`
+  values already loaded in `application` before inserting, so the foreign
+  key is never violated.
+- Switched the MySQL connection to prompt for a password (`getpass`)
+  instead of assuming it's empty, and documented the PowerShell equivalent
+  for commands that use `<` redirection.
+
+# Conclusions
+
+Risk isn't scattered randomly across this portfolio — it concentrates
+predictably. Low-skill occupations, unstable housing, and low education
+all point the same direction (Q1). A troubled or absent bureau history
+roughly doubles default risk compared to a clean one (Q2). Certain
+channels and products — especially `AP+ (Cash loan)` and `Cards` — run
+well above the portfolio average (Q5). Current rejection criteria are
+working, not overcautious: past refusals, especially reason `SCOFR`, keep
+predicting real risk even after approval (Q4). The one assumption this
+data pushes back on is loyalty: returning clients are *not* safer than
+new ones (Q3), so retention shouldn't be treated as automatically
+lower-risk.
 
 # Next steps
-...
+
+- Q3's unexplained residual (clean-history returning clients still
+  riskier than new ones) needs the untrimmed dataset — amounts and dates
+  aren't in the current schema, so this can't go further without
+  reloading more columns.
+- Combine the five findings into a single risk score instead of reading
+  them independently, so an application can be scored on all five signals
+  at once.
+- Pilot tiered pricing or guarantees on the highest-risk segments
+  identified here (Q1 profiles, Q2's troubled-history tier, Q4's
+  SCOFR-refused applicants) before a full rollout.
