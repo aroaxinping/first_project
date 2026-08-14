@@ -11,3 +11,8 @@ freely from there.
 `build_deck.js` is the script that generates it (`pptxgenjs`, run with
 `node build_deck.js`). Re-run it after editing to regenerate the file from
 scratch, rather than hand-editing the `.pptx`.
+
+`q1_applicant_profiles_chart.png` and `q4_rejection_escalation_chart.png`
+are the two charts from the deck (Q1's risk ranking, Q4's refusal-count
+escalation) as standalone images, for pasting straight into the live
+Google Slides deck.
