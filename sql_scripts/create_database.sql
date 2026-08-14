@@ -52,3 +52,18 @@ CREATE TABLE previous_application (
     NAME_SELLER_INDUSTRY    VARCHAR(50),
     FOREIGN KEY (SK_ID_CURR) REFERENCES application(SK_ID_CURR)
 );
+
+-- Aroa's addition: a separate table, NOT a replacement for
+-- previous_application above. Same source CSV, but keeps the
+-- amount/date columns Carla trimmed out, needed to dig into the Q3
+-- residual (why "clean history" returning clients still default more
+-- than new ones). See q3_extended_repeat_client_drivers.sql.
+CREATE TABLE previous_application_extended (
+    SK_ID_PREV             INT PRIMARY KEY,
+    SK_ID_CURR              INT,
+    NAME_CONTRACT_STATUS    VARCHAR(50),
+    AMT_CREDIT              FLOAT,
+    AMT_ANNUITY              FLOAT,
+    DAYS_DECISION            INT,
+    FOREIGN KEY (SK_ID_CURR) REFERENCES application(SK_ID_CURR)
+);
